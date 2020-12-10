@@ -10,12 +10,6 @@ extern crate web_sys;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-macro_rules! log {
-    ($( $t:tt)* ) => {
-        web_sys::console::log_1(&format!($( $t )* ).into());
-    };
-}
-
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -93,6 +87,11 @@ impl Universe {
         self.to_string()
     }
 
+    pub fn toggle_cell(&mut self, row: u32, column: u32){
+        let idx = self.get_index(row, column);
+        self.cells[idx].toggle();
+    }
+
     pub fn width(&self) -> u32 {
         self.width
     }
@@ -152,6 +151,15 @@ impl Universe{
     }
 }
 
+impl Cell {
+    fn toggle(&mut self) {
+        *self = match *self {
+            Cell::Dead => Cell::Alive,
+            Cell::Alive => Cell::Dead,
+        };
+    }
+}
+
 
 impl fmt::Display for Universe {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -167,3 +175,8 @@ impl fmt::Display for Universe {
     }
 }
 
+macro_rules! log {
+    ($( $t:tt)* ) => {
+        web_sys::console::log_1(&format!($( $t )* ).into());
+    };
+}
