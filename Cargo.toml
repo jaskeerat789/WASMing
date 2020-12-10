@@ -35,3 +35,9 @@ opt-level = "s"
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = ["-Oz", "--enable-mutable-globals"]
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "console",
+]

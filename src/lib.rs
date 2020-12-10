@@ -3,11 +3,19 @@ mod utils;
 use std::fmt;
 use wasm_bindgen::prelude::*;
 
+extern crate web_sys;
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+macro_rules! log {
+    ($( $t:tt)* ) => {
+        web_sys::console::log_1(&format!($( $t )* ).into());
+    };
+}
+
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -26,7 +34,10 @@ pub struct Universe {
 /// Public methods, exported to JavaScript.
 #[wasm_bindgen]
 impl Universe {
+    
     pub fn new() -> Universe {
+        utils::set_panic_hook();
+
         let width = 132 * 2;
         let height = 132 * 2;
 
@@ -72,7 +83,6 @@ impl Universe {
                     // All other cells remain in the same state.
                     (otherwise, _) => otherwise,
                 };
-
                 next[idx] = next_cell;
             }
         }
@@ -156,3 +166,4 @@ impl fmt::Display for Universe {
         Ok(())
     }
 }
+
