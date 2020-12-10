@@ -82,17 +82,28 @@ impl Universe {
     pub fn render(&self) -> String {
         self.to_string()
     }
+
     pub fn width(&self) -> u32 {
         self.width
+    }
+
+    pub fn set_width(&mut self,width: u32) {
+        self.width = width;
     }
 
     pub fn height(&self) -> u32 {
         self.height
     }
 
+    pub fn set_height(&mut self, height: u32) {
+        self.height = height;
+        self.cells = (0..self.width * height).map(|_i| Cell::Dead).collect();
+    }
+
     pub fn cells(&self) -> *const Cell {
         self.cells.as_ptr()
     }
+
 }
 
 /// Private methods.
@@ -116,6 +127,18 @@ impl Universe {
             }
         }
         count
+    }
+}
+
+impl Universe{
+    pub fn get_cells(&self) -> &[Cell] {
+        &self.cells
+    }
+    pub fn set_cells(&mut self, cells: &[(u32, u32)]) {
+        for (row, column) in cells.iter().cloned() {
+            let idx = self.get_index(row,column);
+            self.cells[idx] = Cell::Alive;
+        }
     }
 }
 
